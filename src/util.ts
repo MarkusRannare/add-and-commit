@@ -1,10 +1,13 @@
 import * as core from '@actions/core'
+import { info } from '@actions/core'
+import assert from 'assert'
 
 export type Input =
   | 'add'
   | 'author_name'
   | 'author_email'
   | 'branch'
+  | 'parent_branch'
   | 'cwd'
   | 'message'
   | 'pull_strategy'
@@ -20,7 +23,45 @@ export const outputs = {
 }
 export type Output = keyof typeof outputs
 
+const fakeData = true;
+
+function fakeInput(name: Input) : string {
+  switch(name) {
+    case 'add':
+      return '-A'
+    case 'author_name':
+      return 'Your Name'
+    case 'author_email':
+      return 'mail@example.com'
+    case 'branch':
+      return 'v2.1.0'
+    case 'parent_branch':
+      return 'main'
+    case 'cwd':
+      return 'debug-data'
+    case 'message':
+      return 'Your commit message'
+    case 'pull_strategy':
+      return '--no-rebase'
+    case 'remove':
+      return ''
+    case 'push':
+      return 'true'
+    case 'signoff':
+      return 'false'
+    case 'tag':
+      return 'rel-v2.1.1'
+  }
+  // Should never reach here
+  assert(false)
+  return ''
+}
+
 export function getInput(name: Input) {
+  if(fakeData) {
+    return fakeInput(name)
+  }
+
   return core.getInput(name)
 }
 

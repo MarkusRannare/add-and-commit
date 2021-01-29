@@ -31,6 +31,10 @@ Add a step like this to your workflow:
     # Default: the branch that triggered the run
     branch: some-branch
 
+    # if branch is a new branch, then this is the branch we create it of
+    # Default: the branch that triggered the run
+    parent_branch: new-branch
+
     # The local path to the directory where your repository is located. You should use actions/checkout first to set it up
     # Default: '.'
     cwd: './path/to/the/repo'

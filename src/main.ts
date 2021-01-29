@@ -45,10 +45,18 @@ console.log(`Running in ${baseDir}`)
 
     await git.fetch(['--tags', '--force'], log)
 
-    info('> Switching/creating branch...')
-    await git
-      .checkout(getInput('branch'), undefined, log)
-      .catch(() => git.checkoutLocalBranch(getInput('branch'), log))
+    const listRemoteResults = await git.listRemote([
+      '--heads',
+      'origin',
+      getInput('branch')
+    ])
+
+    const desiredBranch = listRemoteResults
+      ? getInput('branch')
+      : getInput('parent_branch')
+
+    info("> Switching to branch '" + desiredBranch + "'...")
+    await git.checkout(desiredBranch, undefined, log)
 
     info('> Pulling from remote...')
     await git.fetch(undefined, log).pull(
@@ -59,6 +67,12 @@ console.log(`Running in ${baseDir}`)
       },
       log
     )
+
+    // If we got something here, then it means that the branch existed, switch to it and update it
+    if (!listRemoteResults) {
+      // Create new branch
+      await git.checkoutLocalBranch(getInput('branch'), log)
+    }
 
     info('> Re-staging files...')
     if (getInput('add')) await add({ ignoreErrors: true })
@@ -103,7 +117,7 @@ console.log(`Running in ${baseDir}`)
       // If the options is `true | string`...
       info('> Pushing commit to repo...')
 
-      if (pushOption === true) {
+      if (pushOption) {
         debug(`Running: git push origin ${getInput('branch')} --set-upstream`)
         await git.push(
           'origin',

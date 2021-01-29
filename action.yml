@@ -17,7 +17,7 @@ inputs:
   branch:
     description: Name of the branch to use, if different from the one that triggered the workflow
     required: false
-  base_branch:
+  parent_branch:
     description: if branch is a new branch, then this is the branch we create if of
     required: false
   cwd:

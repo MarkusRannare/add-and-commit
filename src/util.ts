@@ -23,7 +23,7 @@ export const outputs = {
 }
 export type Output = keyof typeof outputs
 
-const fakeData = true;
+const fakeData = false;
 
 function fakeInput(name: Input) : string {
   switch(name) {

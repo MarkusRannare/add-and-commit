@@ -55,7 +55,7 @@ outputs:
 
 runs:
   using: node12
-  main: build/main.js
+  main: lib/index.js
 
 branding:
   icon: git-commit

@@ -68,7 +68,7 @@ console.log(`Running in ${baseDir}`)
     }
 
     // Branch doesn't exist, create it
-    if (!listRemoteResults) {
+    if (!listRemoteResults || currentBranch != getInput('branch')) {
       // Create new branch
       await git.checkoutLocalBranch(getInput('branch'), log)
     }
@@ -117,11 +117,11 @@ console.log(`Running in ${baseDir}`)
       info('> Pushing commit to repo...')
 
       if (pushOption) {
-        debug(`Running: git push origin ${getInput('branch')} --set-upstream`)
+        debug(`Running: git push origin ${getInput('branch')} --set-upstream --force-with-lease`)
         await git.push(
           'origin',
           getInput('branch'),
-          { '--set-upstream': null },
+          { '--set-upstream': null, '--force-with-lease': null },
           (err, data?) => {
             if (data) setOutput('pushed', 'true')
             return log(err, data)

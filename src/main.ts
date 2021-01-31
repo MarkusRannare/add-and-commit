@@ -54,14 +54,14 @@ console.log(`Running in ${baseDir}`)
 
     // listRemoteResults is true if 'branch' exists
     const desiredBranch = listRemoteResults
-      ? getInput('branch').replace(/\s/g, "")
-      : getInput('parent_branch').replace(/\s/g, "")
+      ? getInput('branch')
+      : getInput('parent_branch')
 
     // Ensure that we are on the correct branch
     const currentBranchResult = await git.raw('rev-parse', '--abbrev-ref', 'HEAD')
     const currentBranch = currentBranchResult.replace(/\s/g, "")
-    if (currentBranch != desiredBranch) {
-      setFailed("This action require you to be on the  branch '" + desiredBranch + "' (" + typeof(desiredBranch) + ") to execute, but the git directory is on the branch '" + currentBranch + "' (" + typeof(currentBranch) + ")")
+    if (!(currentBranch == getInput('branch') || currentBranch == getInput('parent_branch'))) {
+      setFailed("This action require you to be on the branch '" + getInput('branch') + "' (" + typeof(getInput('branch')) + ") or '" + getInput('parent_branch') + "' (" + typeof(getInput('parent_branch')) + ")  to execute, but the git directory is on the branch '" + currentBranch + "' (" + typeof(currentBranch) + ")")
     }
 
     // Branch doesn't exist, create it

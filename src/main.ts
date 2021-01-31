@@ -10,6 +10,7 @@ import path from 'path'
 import simpleGit, { Response } from 'simple-git'
 import YAML from 'js-yaml'
 import { getInput, Input, log, outputs, parseBool, setOutput } from './util'
+import assert from 'assert'
 
 const baseDir = path.join(process.cwd(), getInput('cwd') || '')
 const git = simpleGit({ baseDir })
@@ -51,22 +52,16 @@ console.log(`Running in ${baseDir}`)
       getInput('branch')
     ])
 
+    // listRemoteResults is true if 'branch' exists
     const desiredBranch = listRemoteResults
       ? getInput('branch')
       : getInput('parent_branch')
 
-    info("> Switching to branch '" + desiredBranch + "'...")
-    await git.checkout(desiredBranch, undefined, log)
-
-    info('> Pulling from remote...')
-    await git.fetch(undefined, log).pull(
-      undefined,
-      undefined,
-      {
-        [getInput('pull_strategy')]: null
-      },
-      log
-    )
+    // Ensure that we are on the correct branch
+    const currentBranch = await git.raw('rev-parse', '--abbrev-ref', 'HEAD')
+    if (currentBranch != desiredBranch) {
+      setFailed("We need to be on branch " + desiredBranch + " to execute the command, but we are on " + currentBranch)
+    }
 
     // If we got something here, then it means that the branch existed, switch to it and update it
     if (!listRemoteResults) {

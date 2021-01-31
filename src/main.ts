@@ -59,7 +59,7 @@ console.log(`Running in ${baseDir}`)
 
     // Ensure that we are on the correct branch
     const currentBranch = await git.raw('rev-parse', '--abbrev-ref', 'HEAD')
-    if (currentBranch != desiredBranch) {
+    if ((""+currentBranch) != (""+desiredBranch)) {
       setFailed("We need to be on branch " + desiredBranch + " to execute the command, but we are on " + currentBranch)
     }
 

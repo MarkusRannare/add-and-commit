@@ -52,6 +52,9 @@ console.log(`Running in ${baseDir}`)
       getInput('branch')
     ])
 
+    const allBranches = await git.raw('branch', '-a')
+    info("All branches is \n" + allBranches)
+
     // listRemoteResults is true if 'branch' exists
     const desiredBranch = listRemoteResults
       ? getInput('branch')

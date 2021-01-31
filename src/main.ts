@@ -59,11 +59,11 @@ console.log(`Running in ${baseDir}`)
 
     // Ensure that we are on the correct branch
     const currentBranch = await git.raw('rev-parse', '--abbrev-ref', 'HEAD')
-    if ((""+currentBranch) != (""+desiredBranch)) {
-      setFailed("We need to be on branch " + desiredBranch + " to execute the command, but we are on " + currentBranch)
+    if (currentBranch != desiredBranch) {
+      setFailed("This action require you to be on the  branch '" + desiredBranch + "' (" + typeof(desiredBranch) + ") to execute, but the git directory is on the branch '" + currentBranch + "' (" +typeof(currentBranch) + ")")
     }
 
-    // If we got something here, then it means that the branch existed, switch to it and update it
+    // Branch doesn't exist, create it
     if (!listRemoteResults) {
       // Create new branch
       await git.checkoutLocalBranch(getInput('branch'), log)
